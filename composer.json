@@ -1,0 +1,21 @@
+{
+    "name": "devture/sms-sender",
+    "type": "library",
+    "description": "Library that makes sending SMS messages through varios providers easy",
+    "keywords": ["sms", "sending", "nexmo", "bulksms"],
+	"license": "BSD",
+    "authors": [
+        {
+            "name": "Slavi Pantaleev",
+            "email": "s.pantaleev@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Devture\\Component\\SmsSender\\": "src/"
+        }
+    }
+}

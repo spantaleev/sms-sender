@@ -45,8 +45,7 @@ class BulkSmsGateway implements GatewayInterface {
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://bulksms.vsms.net/eapi/submission/send_sms/2/2.0');
-        curl_setopt ($ch, CURLOPT_PORT, 5567);
+        curl_setopt($ch, CURLOPT_URL, 'https://bulksms.vsms.net/eapi/submission/send_sms/2/2.0');
         curl_setopt ($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -95,7 +94,7 @@ class BulkSmsGateway implements GatewayInterface {
     }
 
     public function getBalance() {
-        $url = 'http://bulksms.vsms.net:5567/eapi/user/get_credits/1/1.1?username=' . $this->username . '&password=' . $this->password;
+        $url = 'https://bulksms.vsms.net/eapi/user/get_credits/1/1.1?username=' . $this->username . '&password=' . $this->password;
 
         $contents = @file_get_contents($url);
 

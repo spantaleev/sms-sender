@@ -24,7 +24,7 @@ class NexmoGateway implements GatewayInterface {
             'text' => $message->getText(),
         );
 
-        $url = 'http://rest.nexmo.com/sms/json?' . http_build_query($data);
+        $url = 'https://rest.nexmo.com/sms/json?' . http_build_query($data);
 
         $contents = @file_get_contents($url);
 
@@ -39,7 +39,7 @@ class NexmoGateway implements GatewayInterface {
     }
 
     public function getBalance() {
-        $url = 'http://rest.nexmo.com/account/get-balance/' . $this->username . '/' . $this->password;
+        $url = 'https://rest.nexmo.com/account/get-balance/' . $this->username . '/' . $this->password;
 
         $contents = @file_get_contents($url);
 

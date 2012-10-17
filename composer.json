@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Library that makes sending SMS messages through varios providers easy",
     "keywords": ["sms", "sending", "nexmo", "bulksms"],
-	"license": "BSD",
+    "license": "BSD",
     "authors": [
         {
             "name": "Slavi Pantaleev",

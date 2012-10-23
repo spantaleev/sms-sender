@@ -15,8 +15,8 @@ Usage
 Example::
 
     <?php
-    use Devture\Component\SmsSender\Gateway\NexmoGateway;
     use Devture\Component\SmsSender\Message;
+    use Devture\Component\SmsSender\Gateway\NexmoGateway;
 
     $message = new Message('sender-name', 'receiver-phone-number', 'message text');
 

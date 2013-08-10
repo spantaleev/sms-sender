@@ -1,11 +1,13 @@
 <?php
+
 namespace Devture\Component\SmsSender\Gateway;
 
 use Devture\Component\SmsSender\Message;
 use Devture\Component\SmsSender\Exception\SendingFailedException;
 use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
-class BulkSmsGateway implements GatewayInterface {
+class BulkSmsGateway implements GatewayInterface
+{
 
     const ROUTING_GROUP_ECONOMY = 1;
     const ROUTING_GROUP_STANDARD = 2;
@@ -14,23 +16,27 @@ class BulkSmsGateway implements GatewayInterface {
     private $username;
     private $password;
     private $routingGroup;
+    private $baseApiUrl;
 
     const ENCODING_16BIT = '16bit';
-
     const RESPONSE_SEPARATOR = '|';
     const RESPONSE_STATUS_SUCCESS = 0;
 
-    public function __construct($username, $password, $routingGroup = self::ROUTING_GROUP_ECONOMY) {
+    public function __construct($username, $password, $routingGroup = self::ROUTING_GROUP_ECONOMY)
+    {
         $this->username = $username;
         $this->password = $password;
         $this->routingGroup = $routingGroup;
+        $this->baseApiUrl = 'https://bulksms.vsms.net/';
     }
 
-    private function isUnicodeString($string) {
+    private function isUnicodeString($string)
+    {
         return mb_strlen($string) !== strlen($string);
     }
 
-    public function send(Message $message) {
+    public function send(Message $message)
+    {
         $data = array();
         $data['msisdn'] = $message->getPhoneNumber();
         $data['username'] = $this->username;
@@ -45,10 +51,10 @@ class BulkSmsGateway implements GatewayInterface {
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://bulksms.vsms.net/eapi/submission/send_sms/2/2.0');
-        curl_setopt ($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_URL, $this->baseApiUrl . 'eapi/submission/send_sms/2/2.0');
+        curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt ($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
         $responseString = curl_exec($ch);
         $curlInfo = curl_getinfo($ch);
 
@@ -73,7 +79,7 @@ class BulkSmsGateway implements GatewayInterface {
         if ($partsCount === 2) {
             //batchId is missing when there are errors - let's set it to some benign value.
             $parts[] = 0;
-            ++ $partsCount;
+            ++$partsCount;
         }
 
         if ($partsCount !== 3) {
@@ -81,8 +87,8 @@ class BulkSmsGateway implements GatewayInterface {
         }
 
         list($statusCode, $statusText, $batchId) = $parts;
-        $statusCode = (int)$statusCode;
-        $batchId = (int)$batchId;
+        $statusCode = (int) $statusCode;
+        $batchId = (int) $batchId;
 
         if ($statusCode !== self::RESPONSE_STATUS_SUCCESS) {
             throw new SendingFailedException('Bad status code: ' . $statusCode . ' -- ' . $statusText);
@@ -93,8 +99,9 @@ class BulkSmsGateway implements GatewayInterface {
         }
     }
 
-    public function getBalance() {
-        $url = 'https://bulksms.vsms.net/eapi/user/get_credits/1/1.1?username=' . $this->username . '&password=' . $this->password;
+    public function getBalance()
+    {
+        $url = $this->baseApiUrl . 'eapi/user/get_credits/1/1.1?username=' . $this->username . '&password=' . $this->password;
 
         $contents = @file_get_contents($url);
 
@@ -112,7 +119,13 @@ class BulkSmsGateway implements GatewayInterface {
             throw new BalanceRetrievalFailedException('Invalud status code: ' . $statusCode);
         }
 
-        return (double)$creditsCount;
+        return (double) $creditsCount;
+    }
+
+    public function setBaseApiUrl($url)
+    {
+        $this->baseApiUrl = (string) $url;
+        return $this;
     }
 
 }

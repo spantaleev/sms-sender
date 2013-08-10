@@ -1,5 +1,4 @@
 <?php
-
 namespace Devture\Component\SmsSender\Gateway;
 
 use Devture\Component\SmsSender\Message;
@@ -22,21 +21,18 @@ class BulkSmsGateway implements GatewayInterface
     const RESPONSE_SEPARATOR = '|';
     const RESPONSE_STATUS_SUCCESS = 0;
 
-    public function __construct($username, $password, $routingGroup = self::ROUTING_GROUP_ECONOMY)
-    {
+    public function __construct($username, $password, $routingGroup = self::ROUTING_GROUP_ECONOMY) {
         $this->username = $username;
         $this->password = $password;
         $this->routingGroup = $routingGroup;
-        $this->baseApiUrl = 'https://bulksms.vsms.net/';
+        $this->baseApiUrl = 'https://bulksms.vsms.net';
     }
 
-    private function isUnicodeString($string)
-    {
+    private function isUnicodeString($string) {
         return mb_strlen($string) !== strlen($string);
     }
 
-    public function send(Message $message)
-    {
+    public function send(Message $message) {
         $data = array();
         $data['msisdn'] = $message->getPhoneNumber();
         $data['username'] = $this->username;
@@ -51,7 +47,7 @@ class BulkSmsGateway implements GatewayInterface
         }
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $this->baseApiUrl . 'eapi/submission/send_sms/2/2.0');
+        curl_setopt($ch, CURLOPT_URL, $this->baseApiUrl . '/eapi/submission/send_sms/2/2.0');
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
@@ -99,9 +95,8 @@ class BulkSmsGateway implements GatewayInterface
         }
     }
 
-    public function getBalance()
-    {
-        $url = $this->baseApiUrl . 'eapi/user/get_credits/1/1.1?username=' . $this->username . '&password=' . $this->password;
+    public function getBalance() {
+        $url = $this->baseApiUrl . '/eapi/user/get_credits/1/1.1?username=' . $this->username . '&password=' . $this->password;
 
         $contents = @file_get_contents($url);
 
@@ -122,10 +117,8 @@ class BulkSmsGateway implements GatewayInterface
         return (double) $creditsCount;
     }
 
-    public function setBaseApiUrl($url)
-    {
+    public function setBaseApiUrl($url) {
         $this->baseApiUrl = (string) $url;
-        return $this;
     }
 
 }

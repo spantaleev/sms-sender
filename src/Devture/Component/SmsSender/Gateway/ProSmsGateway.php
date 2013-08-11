@@ -11,10 +11,12 @@ class ProSmsGateway implements GatewayInterface {
 
     private $username;
     private $password;
+    private $baseApiUrl;
 
     public function __construct($username, $password) {
         $this->username = $username;
         $this->password = $password;
+        $this->baseApiUrl = 'http://pro-sms.eu';
     }
 
     public function send(Message $message) {
@@ -26,7 +28,7 @@ class ProSmsGateway implements GatewayInterface {
             'message' => $message->getText(),
         );
 
-        $url = 'http://pro-sms.eu/feed/send.php?' . http_build_query($data);
+        $url = $this->baseApiUrl . '/feed/send.php?' . http_build_query($data);
 
         $contents = @file_get_contents($url);
 
@@ -34,13 +36,13 @@ class ProSmsGateway implements GatewayInterface {
             throw new SendingFailedException('Cannot make HTTP request for: ' . $url);
         }
 
-        if ((int)$contents !== self::RESPONSE_STATUS_SUCCESS) {
+        if ((int) $contents !== self::RESPONSE_STATUS_SUCCESS) {
             throw new SendingFailedException('Received bad result code (' . $contents . ') for: ' . $url);
         }
     }
 
     public function getBalance() {
-        $url = 'http://pro-sms.eu/feed/balans.php?uname=' . $this->username . '&pass=' . $this->password;
+        $url = $this->baseApiUrl . '/feed/balans.php?uname=' . $this->username . '&pass=' . $this->password;
 
         $contents = @file_get_contents($url);
 
@@ -52,7 +54,11 @@ class ProSmsGateway implements GatewayInterface {
             throw new BalanceRetrievalFailedException('Invalid response (' . $contents . ') from: ' . $url);
         }
 
-        return (double)$contents;
+        return (double) $contents;
+    }
+
+    public function setBaseApiUrl($url) {
+        $this->baseApiUrl = $url;
     }
 
 }

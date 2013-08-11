@@ -5,8 +5,7 @@ use Devture\Component\SmsSender\Message;
 use Devture\Component\SmsSender\Exception\SendingFailedException;
 use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
-class ProSmsGateway implements GatewayInterface
-{
+class ProSmsGateway implements GatewayInterface {
 
     const RESPONSE_STATUS_SUCCESS = 0;
 
@@ -14,8 +13,7 @@ class ProSmsGateway implements GatewayInterface
     private $password;
     private $baseApiUrl;
 
-    public function __construct($username, $password)
-    {
+    public function __construct($username, $password) {
         $this->username = $username;
         $this->password = $password;
         $this->baseApiUrl = 'http://pro-sms.eu';
@@ -60,7 +58,7 @@ class ProSmsGateway implements GatewayInterface
     }
 
     public function setBaseApiUrl($url) {
-        $this->baseApiUrl = (string) $url;
+        $this->baseApiUrl = $url;
     }
 
 }

@@ -5,8 +5,7 @@ use Devture\Component\SmsSender\Message;
 use Devture\Component\SmsSender\Exception\SendingFailedException;
 use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
-interface GatewayInterface
-{
+interface GatewayInterface {
 
     /**
      * @param Message $message
@@ -19,5 +18,8 @@ interface GatewayInterface
      */
     public function getBalance();
 
-    public function setBaseApiUri();
+    /**
+     * @param string $url
+     */
+    public function setBaseApiUri($url);
 }

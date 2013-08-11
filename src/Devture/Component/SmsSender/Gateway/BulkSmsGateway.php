@@ -5,8 +5,7 @@ use Devture\Component\SmsSender\Message;
 use Devture\Component\SmsSender\Exception\SendingFailedException;
 use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
-class BulkSmsGateway implements GatewayInterface
-{
+class BulkSmsGateway implements GatewayInterface {
 
     const ROUTING_GROUP_ECONOMY = 1;
     const ROUTING_GROUP_STANDARD = 2;
@@ -118,7 +117,7 @@ class BulkSmsGateway implements GatewayInterface
     }
 
     public function setBaseApiUrl($url) {
-        $this->baseApiUrl = (string) $url;
+        $this->baseApiUrl = $url;
     }
 
 }

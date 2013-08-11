@@ -5,8 +5,7 @@ use Devture\Component\SmsSender\Message;
 use Devture\Component\SmsSender\Exception\SendingFailedException;
 use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
-class NexmoGateway implements GatewayInterface
-{
+class NexmoGateway implements GatewayInterface {
 
     private $username;
     private $password;
@@ -59,7 +58,7 @@ class NexmoGateway implements GatewayInterface
     }
 
     public function setBaseApiUrl($url) {
-        $this->baseApiUrl = (string) $url;
+        $this->baseApiUrl = $url;
     }
 
 }

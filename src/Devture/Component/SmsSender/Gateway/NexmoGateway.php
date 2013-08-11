@@ -9,10 +9,12 @@ class NexmoGateway implements GatewayInterface {
 
     private $username;
     private $password;
+    private $baseApiUrl;
 
     public function __construct($username, $password) {
         $this->username = $username;
         $this->password = $password;
+        $this->baseApiUrl = 'https://rest.nexmo.com';
     }
 
     public function send(Message $message) {
@@ -24,7 +26,7 @@ class NexmoGateway implements GatewayInterface {
             'text' => $message->getText(),
         );
 
-        $url = 'https://rest.nexmo.com/sms/json?' . http_build_query($data);
+        $url = $this->baseApiUrl . '/sms/json?' . http_build_query($data);
 
         $contents = @file_get_contents($url);
 
@@ -39,7 +41,7 @@ class NexmoGateway implements GatewayInterface {
     }
 
     public function getBalance() {
-        $url = 'https://rest.nexmo.com/account/get-balance/' . $this->username . '/' . $this->password;
+        $url = $this->baseApiUrl . '/account/get-balance/' . $this->username . '/' . $this->password;
 
         $contents = @file_get_contents($url);
 
@@ -53,6 +55,10 @@ class NexmoGateway implements GatewayInterface {
         }
 
         return $response['value'];
+    }
+
+    public function setBaseApiUrl($url) {
+        $this->baseApiUrl = $url;
     }
 
 }

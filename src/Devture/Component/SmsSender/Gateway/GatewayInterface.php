@@ -18,4 +18,8 @@ interface GatewayInterface {
      */
     public function getBalance();
 
+    /**
+     * @param string $url
+     */
+    public function setBaseApiUri($url);
 }

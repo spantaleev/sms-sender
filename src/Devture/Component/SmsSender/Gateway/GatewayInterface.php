@@ -21,5 +21,5 @@ interface GatewayInterface {
     /**
      * @param string $url
      */
-    public function setBaseApiUri($url);
+    public function setBaseApiUrl($url);
 }

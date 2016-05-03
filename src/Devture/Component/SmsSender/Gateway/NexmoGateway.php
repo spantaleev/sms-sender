@@ -7,20 +7,20 @@ use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
 class NexmoGateway implements GatewayInterface {
 
-    private $username;
-    private $password;
+    private $apiKey;
+    private $apiSecret;
     private $baseApiUrl;
 
-    public function __construct($username, $password) {
-        $this->username = $username;
-        $this->password = $password;
+    public function __construct($apiKey, $apiSecret) {
+        $this->apiKey = $apiKey;
+        $this->apiSecret = $apiSecret;
         $this->baseApiUrl = 'https://rest.nexmo.com';
     }
 
     public function send(Message $message) {
         $data = array(
-            'username' => $this->username,
-            'password' => $this->password,
+            'api_key' => $this->apiKey,
+            'api_secret' => $this->apiSecret,
             'from' => $message->getSender(),
             'to' => $message->getPhoneNumber(),
             'text' => $message->getText(),
@@ -41,7 +41,7 @@ class NexmoGateway implements GatewayInterface {
     }
 
     public function getBalance() {
-        $url = $this->baseApiUrl . '/account/get-balance/' . $this->username . '/' . $this->password;
+        $url = $this->baseApiUrl . '/account/get-balance/' . $this->apiKey . '/' . $this->apiSecret;
 
         $contents = @file_get_contents($url);
 

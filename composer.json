@@ -1,13 +1,13 @@
 {
     "name": "devture/sms-sender",
     "type": "library",
-    "description": "Library that makes sending SMS messages through varios providers easy",
+    "description": "Library that makes sending SMS messages through various providers easy",
     "keywords": ["sms", "sending", "nexmo", "bulksms"],
     "license": "BSD",
     "authors": [
         {
             "name": "Slavi Pantaleev",
-            "email": "s.pantaleev@gmail.com"
+            "email": "slavi@devture.com"
         }
     ],
     "require": {

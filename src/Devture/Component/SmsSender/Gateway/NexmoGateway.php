@@ -35,7 +35,7 @@ class NexmoGateway implements GatewayInterface {
             throw new SendingFailedException('Invalid response (' . $contents . ') from: ' . $url);
         }
 
-        if ($response['message-count'] !== '1') {
+        if ((int) $response['message-count'] < 1) {
             throw new SendingFailedException('Failed sending (' . $contents . ') for: ' . $url);
         }
     }

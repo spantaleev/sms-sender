@@ -18,7 +18,7 @@ class NexmoGateway implements GatewayInterface {
     }
 
     public function send(Message $message) {
-        $data = array(
+        $postData = array(
             'api_key' => $this->apiKey,
             'api_secret' => $this->apiSecret,
             'from' => $message->getSender(),
@@ -26,9 +26,22 @@ class NexmoGateway implements GatewayInterface {
             'text' => $message->getText(),
         );
 
-        $url = $this->baseApiUrl . '/sms/json?' . http_build_query($data);
+        $postBody = http_build_query($postData);
 
-        $contents = @file_get_contents($url);
+        $context  = stream_context_create(array(
+            'http' => array(
+                'method'  => 'POST',
+                'header'  => array(
+                    'Content-Type: application/x-www-form-urlencoded',
+                    sprintf('Content-Length: %d', strlen($postBody)),
+                ),
+                'content' => $postBody,
+            ),
+        ));
+
+        $url = $this->baseApiUrl . '/sms/json';
+
+        $contents = @file_get_contents($url, false, $context);
 
         $response = json_decode($contents, 1);
         if (!is_array($response) || !array_key_exists('message-count', $response)) {

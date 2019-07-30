@@ -35,8 +35,31 @@ class NexmoGateway implements GatewayInterface {
             throw new SendingFailedException('Invalid response (' . $contents . ') from: ' . $url);
         }
 
+        // `messages-count` merely contains the number of messages in the request,
+        // not the messages that were sent or anything.
         if ((int) $response['message-count'] < 1) {
             throw new SendingFailedException('Failed sending (' . $contents . ') for: ' . $url);
+        }
+
+        if (!array_key_exists('messages', $response) || !is_array($response['messages'])) {
+            throw new SendingFailedException('Failed to find messages field in response');
+        }
+
+        if (count($response['messages']) !== 1) {
+            throw new SendingFailedException(sprintf(
+                'Unexpected number of objects in messages field: %d',
+                count($response['messages'])
+            ));
+        }
+
+        $messageResult = $response['messages'][0];
+
+        // Statuses are documented here: https://developer.nexmo.com/messaging/sms/guides/troubleshooting-sms
+        if ((int) $messageResult['status'] !== 0) {
+            throw new SendingFailedException(sprintf(
+                'Message delivery returned a non-0 status: %s',
+                json_encode($messageResult)
+            ));
         }
     }
 

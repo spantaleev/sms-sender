@@ -3,6 +3,7 @@ namespace Devture\Component\SmsSender\Gateway;
 
 use Devture\Component\SmsSender\Message;
 use Devture\Component\SmsSender\Exception\SendingFailedException;
+use Devture\Component\SmsSender\Exception\SendingThrottledException;
 use Devture\Component\SmsSender\Exception\BalanceRetrievalFailedException;
 
 class NexmoGateway implements GatewayInterface {
@@ -18,7 +19,7 @@ class NexmoGateway implements GatewayInterface {
     }
 
     public function send(Message $message) {
-        $postData = array(
+        $data = array(
             'api_key' => $this->apiKey,
             'api_secret' => $this->apiSecret,
             'from' => $message->getSender(),
@@ -26,22 +27,9 @@ class NexmoGateway implements GatewayInterface {
             'text' => $message->getText(),
         );
 
-        $postBody = http_build_query($postData);
+        $url = $this->baseApiUrl . '/sms/json?' . http_build_query($data);
 
-        $context  = stream_context_create(array(
-            'http' => array(
-                'method'  => 'POST',
-                'header'  => array(
-                    'Content-Type: application/x-www-form-urlencoded',
-                    sprintf('Content-Length: %d', strlen($postBody)),
-                ),
-                'content' => $postBody,
-            ),
-        ));
-
-        $url = $this->baseApiUrl . '/sms/json';
-
-        $contents = @file_get_contents($url, false, $context);
+        $contents = @file_get_contents($url);
 
         $response = json_decode($contents, 1);
         if (!is_array($response) || !array_key_exists('message-count', $response)) {
@@ -68,7 +56,16 @@ class NexmoGateway implements GatewayInterface {
         $messageResult = $response['messages'][0];
 
         // Statuses are documented here: https://developer.nexmo.com/messaging/sms/guides/troubleshooting-sms
-        if ((int) $messageResult['status'] !== 0) {
+        $statusCode = (int) $messageResult['status'];
+
+        if ($statusCode === 1) {
+            throw new SendingThrottledException(sprintf(
+                'Message-sending throttled: %s',
+                json_encode($messageResult)
+            ));
+        }
+
+        if ($statusCode !== 0) {
             throw new SendingFailedException(sprintf(
                 'Message delivery returned a non-0 status: %s',
                 json_encode($messageResult)

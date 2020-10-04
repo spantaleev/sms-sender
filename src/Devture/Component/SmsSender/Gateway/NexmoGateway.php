@@ -46,7 +46,8 @@ class NexmoGateway implements GatewayInterface {
             throw new SendingFailedException('Failed to find messages field in response');
         }
 
-        if (count($response['messages']) !== 1) {
+        // 1 or more messages is expected.
+        if (count($response['messages']) === 0) {
             throw new SendingFailedException(sprintf(
                 'Unexpected number of objects in messages field: %d',
                 count($response['messages'])

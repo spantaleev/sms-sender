@@ -113,7 +113,7 @@ class BulkSmsGateway implements GatewayInterface {
             throw new BalanceRetrievalFailedException('Invalud status code: ' . $statusCode);
         }
 
-        return (double) $creditsCount;
+        return (float) $creditsCount;
     }
 
     public function setBaseApiUrl($url) {

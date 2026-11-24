@@ -54,7 +54,7 @@ class ProSmsGateway implements GatewayInterface {
             throw new BalanceRetrievalFailedException('Invalid response (' . $contents . ') from: ' . $url);
         }
 
-        return (double) $contents;
+        return (float) $contents;
     }
 
     public function setBaseApiUrl($url) {
